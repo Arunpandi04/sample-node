@@ -1,0 +1,22 @@
+{
+  "name": "sample-node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Arunpandi04/sample-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Arunpandi04/sample-node/issues"
+  },
+  "homepage": "https://github.com/Arunpandi04/sample-node#readme",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
