@@ -1,11 +1,11 @@
 
 const generateToken = require('../Utils/tokenGenerator');
 const authentication = require('../Utils/authentication')
-const userModal = require('../Modal/user.modal');
+const userModal = require('../Modal/userModal');
 const jwt = require('jsonwebtoken');
 
 const getUserRoutes = (router) => {
-    router.route('/').get( (req, res) => res.send('1Password Vaults Access Management Application'));
+    router.route('/').get( (req, res) => res.send('Sample Node Application'));
     router.route('/ping').get( (req, res) => res.send({ status: 'active', time: new Date() }));
 
     router.route('/create-user').post( async (req, res) => {
@@ -75,7 +75,6 @@ const getUserRoutes = (router) => {
         if (token == null) return res.status(400),send({data: { message: "Refresh Token inValid" }})
         jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET, (err, decoded) => {
              if (err) return res.status(401).send({data: { message: "Unauthorized Refresh Token inValid" }})
-             console.log("decoded",decoded)
              const token = generateToken(decoded.id,'access');
              return res.status(200).send({token});
          });
