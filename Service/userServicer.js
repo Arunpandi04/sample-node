@@ -2,6 +2,7 @@
 const generateToken = require('../Utils/tokenGenerator');
 const authentication = require('../Utils/authentication')
 const userModal = require('../Modal/userModal');
+const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
 const getUserRoutes = (router) => {
@@ -80,6 +81,18 @@ const getUserRoutes = (router) => {
          });
     });
 
+    router.route('/getall').get(authentication, async (req, res) => {
+        try {
+            const response =  await axios({
+                method: 'get',
+                url: 'https://637cb99572f3ce38eaabb3a4.mockapi.io/hightechservice/users',
+              })
+              res.status(200).send({data:response.data,message:"Get All user"}); 
+            } catch(error) {
+                res.status(500).send({message: error.message});
+            }
+    })
+      
     return router;
 }
 
