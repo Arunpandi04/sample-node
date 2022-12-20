@@ -6,6 +6,7 @@ const axios = require('axios');
 const jwt = require('jsonwebtoken');
 
 const getUserRoutes = (router) => {
+
     router.route('/').get( (req, res) => res.send('Sample Node Application'));
     router.route('/ping').get( (req, res) => res.send({ status: 'active', time: new Date() }));
     
@@ -20,7 +21,7 @@ const getUserRoutes = (router) => {
                 firstName,
                 lastName,
                 email,
-                password: password.toString(),
+                password: password,
             });
             const data = {
                 user: user,
