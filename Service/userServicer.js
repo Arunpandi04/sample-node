@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const getUserRoutes = (router) => {
     router.route('/').get( (req, res) => res.send('Sample Node Application'));
     router.route('/ping').get( (req, res) => res.send({ status: 'active', time: new Date() }));
-
+    
     router.route('/create-user').post( async (req, res) => {
         try {
             const { firstName, lastName, email, password } = req.body;
@@ -81,13 +81,10 @@ const getUserRoutes = (router) => {
          });
     });
 
-    router.route('/getall').get(authentication, async (req, res) => {
+    router.route('/getall').get( async (req, res) => {
         try {
-            const response =  await axios({
-                method: 'get',
-                url: 'https://637cb99572f3ce38eaabb3a4.mockapi.io/hightechservice/users',
-              })
-              res.status(200).send({data:response.data,message:"Get All user"}); 
+            const user = await userModal.find();
+              res.status(200).send({data:user, message:"Get All user"}); 
             } catch(error) {
                 res.status(500).send({message: error.message});
             }

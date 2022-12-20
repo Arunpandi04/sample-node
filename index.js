@@ -6,7 +6,7 @@ const getUserRoutes = require('./Service/userServicer');
 const initializeDBConnection = require('./Config/db');
 require('dotenv').config();
 
-const port = 3003
+const port = 5000
 
 const router = express.Router();
 
