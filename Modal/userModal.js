@@ -1,4 +1,6 @@
-const mongoose = require("mongoose") ;
+import  mongoose from "mongoose" ;
+import mongooseSequence from 'mongoose-sequence';
+const autoIncrement = mongooseSequence(mongoose)
 const validateEmail = (email) => {
   const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   return re.test(email);
@@ -6,6 +8,7 @@ const validateEmail = (email) => {
 
 const userSchema = new mongoose.Schema(
   {
+    id: Number,
     firstName: {
       type: String,
       required: true,
@@ -26,6 +29,10 @@ const userSchema = new mongoose.Schema(
         "Please fill a valid email address",
       ],
     },
+    phone: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
       required: true,
@@ -33,8 +40,8 @@ const userSchema = new mongoose.Schema(
       maxlength: 12,
     }
   },
-  { timestamps: true }
+  { timestamps: true, _id: false  }
 );
-
+userSchema.plugin(autoIncrement);
 const userModal = mongoose.model('user', userSchema);
-module.exports = userModal
+export default userModal

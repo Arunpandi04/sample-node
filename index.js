@@ -1,12 +1,15 @@
-const express = require('express');
-const bodyParser =  require('body-parser');
-const cors = require('cors');
-const app = express();
-const getUserRoutes = require('./Service/userServicer');
-const initializeDBConnection = require('./Config/db');
-require('dotenv').config();
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import getUserRoutes from './Service/userServicer';
+import initializeDBConnection from './Config/db';
+import * as dotenv from 'dotenv'
+
+dotenv.config();
 
 const port = 5000
+
+const app = express();
 
 const router = express.Router();
 
