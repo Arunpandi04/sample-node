@@ -71,7 +71,7 @@ const getUserRoutes = (router) => {
             if (!user) {
                 res.status(400).send({ message: 'User Not Found' });
             }
-            res.status(200).send(user);
+            res.status(200).send({user, message: 'user getById Successfully'});
         } catch (error) {
             res.status(500).send({ message: error.message });
         }
