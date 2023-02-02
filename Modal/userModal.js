@@ -9,11 +9,19 @@ const validateEmail = (email) => {
 const userSchema = new mongoose.Schema(
   {
     id: Number,
+    userId: {
+      type: Number,
+      required: true,
+    },
     firstName: {
       type: String,
       required: true,
     },
     lastName: {
+      type: String,
+      required: true,
+    },
+    gender: {
       type: String,
       required: true,
     },

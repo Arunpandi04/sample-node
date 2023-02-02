@@ -3,7 +3,7 @@ import generateToken from '../Utils/tokenGenerator';
 import authentication from '../Utils/authentication';
 import userModal from '../Modal/userModal';
 import jwt from 'jsonwebtoken';
-import fetch, {Headers} from 'node-fetch';
+import fetch, { Headers } from 'node-fetch';
 
 const getUserRoutes = (router) => {
 
@@ -13,28 +13,57 @@ const getUserRoutes = (router) => {
     router.route('/create-user').post(async (req, res) => {
         try {
             console.log("create-user")
-            const { firstName, lastName, email, password, phone } = req.body;
+            const { firstName, lastName, email, password, phone, gender } = req.body;
             const userExists = await userModal.findOne({ email });
             if (userExists) {
                 res.status(400).send({ message: 'Email already registered' });
             }
-            const user = await userModal.create({
-                firstName,
-                lastName,
-                email,
-                phone,
-                password: password,
+
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
+            myHeaders.append("Content-Type", "application/json");
+            console.log("email",email)
+            var raw = JSON.stringify({
+                "name": firstName + " " + lastName,
+                "email": email,
+                "gender": gender,
+                "status": "active"
             });
-            console.log("user",user)
-            const data = {
-                user: user,
-                message: "Signup Successfully",
-                accessToken: generateToken(user._id, 'access'),
-                refreshToken: generateToken(user._id, 'refresh'),
+
+            var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
-            res.status(200).send(data)
+
+            const response = await fetch("https://gorest.co.in/public/v2/users", requestOptions)
+            if (response.ok) {
+                const resUser = await response.json()
+                const user = await userModal.create({
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    gender,
+                    password: password,
+                    userId: resUser.id
+                });
+                const data = {
+                    user: user,
+                    message: "Signup Successfully",
+                    accessToken: generateToken(user._id, 'access'),
+                    refreshToken: generateToken(user._id, 'refresh'),
+                };
+                res.status(200).send(data)
+            } else {
+                const message = await response.json()
+                res.status(400).send({ message });
+
+            }
+
         } catch (err) {
-            console.log("err",err)
+            console.log("err", err)
             res.status(500).send({ message: err.message });
         }
     });
@@ -71,7 +100,7 @@ const getUserRoutes = (router) => {
             if (!user) {
                 res.status(400).send({ message: 'User Not Found' });
             }
-            res.status(200).send({user, message: 'user getById Successfully'});
+            res.status(200).send({ user, message: 'user getById Successfully' });
         } catch (error) {
             res.status(500).send({ message: error.message });
         }
@@ -115,30 +144,30 @@ const getUserRoutes = (router) => {
         try {
             const { title, body, user_id } = req.body;
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-            
+
             var raw = JSON.stringify({
                 "title": title,
                 "body": body,
                 "user_id": user_id
             });
-            
+
             var requestOptions = {
-              method: 'POST',
-              headers: myHeaders,
-              body: raw,
-              redirect: 'follow'
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch("https://gorest.co.in/public/v2/posts", requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "Post successfull submitted" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
@@ -150,26 +179,26 @@ const getUserRoutes = (router) => {
         try {
             const id = req.params.id
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-            
+
             var raw = JSON.stringify(req.body);
-            
+
             var requestOptions = {
-              method: 'PUT',
-              headers: myHeaders,
-              body: raw,
-              redirect: 'follow'
+                method: 'PUT',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch(`https://gorest.co.in/public/v2/posts/${id}`, requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "Post successfull submitted" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
@@ -181,24 +210,24 @@ const getUserRoutes = (router) => {
         try {
             const id = req.params.id
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-            
-            
+
+
             var requestOptions = {
-              method: 'GET',
-              headers: myHeaders,
-              redirect: 'follow'
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch(`https://gorest.co.in/public/v2/posts/${id}`, requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "Post successfull submitted" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
@@ -210,24 +239,24 @@ const getUserRoutes = (router) => {
         try {
             const id = req.params.id
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-            
-            
+
+
             var requestOptions = {
-              method: 'GET',
-              headers: myHeaders,
-              redirect: 'follow'
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch(`https://gorest.co.in/public/v2/posts`, requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "GetAll Post successfull" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
@@ -239,26 +268,26 @@ const getUserRoutes = (router) => {
         try {
             const id = req.params.id
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-            
+
             var raw = JSON.stringify(req.body);
-            
+
             var requestOptions = {
-              method: 'PUT',
-              headers: myHeaders,
-              body: raw,
-              redirect: 'follow'
+                method: 'PUT',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch(`https://gorest.co.in/public/v2/comments/${id}`, requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "Post successfull updated" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
@@ -270,24 +299,24 @@ const getUserRoutes = (router) => {
         try {
             const id = req.params.id
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-        
-            
+
+
             var requestOptions = {
-              method: 'GET',
-              headers: myHeaders,
-              redirect: 'follow'
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch(`https://gorest.co.in/public/v2/comments/${id}`, requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "Get Comment by id successfull" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
@@ -299,31 +328,31 @@ const getUserRoutes = (router) => {
         try {
             const { body, name, post_id, email } = req.body;
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-            
+
             var raw = JSON.stringify({
-                    "post_id": post_id,
-                    "name": name,
-                    "email": email,
-                    "body": body
+                "post_id": post_id,
+                "name": name,
+                "email": email,
+                "body": body
             });
-            
+
             var requestOptions = {
-              method: 'POST',
-              headers: myHeaders,
-              body: raw,
-              redirect: 'follow'
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch("https://gorest.co.in/public/v2/comments", requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "Comment successfull Submitted" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
@@ -334,23 +363,23 @@ const getUserRoutes = (router) => {
     router.route('/comment').get(authentication, async (req, res) => {
         try {
             var myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 45dd03c1ddd5a85933743fb7c5ef2e5698d5eeb1917f766126b1cd793a6b393c");
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
             myHeaders.append("Content-Type", "application/json");
-            
+
             var requestOptions = {
-              method: 'GET',
-              headers: myHeaders,
-              redirect: 'follow'
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
             };
-            
+
             const response = await fetch("https://gorest.co.in/public/v2/comments", requestOptions)
-            if(response.ok) {
+            if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "GetAll Comments successfull" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
-               
+
             }
 
         } catch (error) {
