@@ -140,6 +140,7 @@ const getUserRoutes = (router) => {
             res.status(500).send({ message: error.message });
         }
     })
+
     router.route('/post').post(authentication, async (req, res) => {
         try {
             const { title, body, user_id } = req.body;
@@ -164,6 +165,33 @@ const getUserRoutes = (router) => {
             if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "Post successfull submitted" });
+            } else {
+                const message = await response.json()
+                res.status(400).send({ message });
+
+            }
+
+        } catch (error) {
+            res.status(500).send({ message: error.message });
+        }
+    })
+
+    router.route('/post/:id').delete(authentication, async (req, res) => {
+        try {
+            const id = req.params.id
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
+            myHeaders.append("Content-Type", "application/json");
+
+            var requestOptions = {
+                method: 'DELETE',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+            console.log("response---->",id)
+            const response = await fetch(`https://gorest.co.in/public/v2/posts/${id}`, requestOptions)
+            if (response.ok) {
+                res.status(200).send({ message: "Post deleted successfull" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
@@ -376,6 +404,34 @@ const getUserRoutes = (router) => {
             if (response.ok) {
                 const data = await response.json()
                 res.status(200).send({ data, message: "GetAll Comments successfull" });
+            } else {
+                const message = await response.json()
+                res.status(400).send({ message });
+
+            }
+
+        } catch (error) {
+            res.status(500).send({ message: error.message });
+        }
+    })
+
+
+    router.route('/comment/:id').delete(authentication, async (req, res) => {
+        try {
+            const id = req.params.id
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
+            myHeaders.append("Content-Type", "application/json");
+
+            var requestOptions = {
+                method: 'DELETE',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            const response = await fetch(`https://gorest.co.in/public/v2/comments/${id}`, requestOptions)
+            if (response.ok) {
+                res.status(200).send({ message: "Comment deleted successfull" });
             } else {
                 const message = await response.json()
                 res.status(400).send({ message });
