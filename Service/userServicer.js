@@ -108,9 +108,9 @@ const getUserRoutes = (router) => {
 
     router.route('/refresh-token').post(async (req, res) => {
         const { token } = req.body;
-        if (token == null) return res.status(400), send({ data: { message: "Refresh Token inValid" } })
+        if (token == null) return res.status(400), send({ message: "Refresh Token inValid" })
         jwt.verify(token, process.env.JWT_REFRESH_TOKEN_SECRET, (err, decoded) => {
-            if (err) return res.status(401).send({ data: { message: "Unauthorized Refresh Token inValid" } })
+            if (err) return res.status(401).send({message: "Unauthorized Refresh Token inValid" })
             const token = generateToken(decoded.id, 'access');
             return res.status(200).send({ token });
         });
