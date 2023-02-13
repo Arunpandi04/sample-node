@@ -442,6 +442,37 @@ const getUserRoutes = (router) => {
             res.status(500).send({ message: error.message });
         }
     })
+
+
+
+    router.route('/youtube').get(authentication, async (req, res) => {
+        try {
+            const searchQuery = req.query.search_query;
+            const apiKey = "AIzaSyAyM0w1J6wzD2_3gmJ9jzWFz8jHpKJ5CgM";
+            const apiUrl = "https://www.googleapis.com/youtube/v3";
+            var myHeaders = new Headers();
+            // myHeaders.append("Authorization", "Bearer 104a835ab8c8a09a047532a6b0569c9e987b05d19a3d03e5625355912d585a24");
+            myHeaders.append("Content-Type", "application/json");
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            const response = await fetch(`${apiUrl}/search?key=${apiKey}&type=video&part=snippet&q=${searchQuery}`, requestOptions)
+            if (response.ok) {
+                const message = await response.json()
+                res.status(200).send({data: message?.items,  message: "Youtube get" });
+            } else {
+                const message = await response.json()
+                res.status(400).send({ message });
+            }
+
+        } catch (error) {
+            res.status(500).send({ message: error.message });
+        }
+    })
     return router;
 }
 
